@@ -1,5 +1,7 @@
 namespace Mantenimiento.Application.Equipment.DTOs;
 
+using MediatR;
+
 public record UpdateEquipmentRequest 
 (
     int Id,
@@ -7,4 +9,4 @@ public record UpdateEquipmentRequest
     string Name,
     string Area,
     bool Active
-) : CreateEquipmentRequest (Code, Name, Area, Active);
+) : CreateEquipmentRequest (Code, Name, Area, Active), IRequest<int?>;

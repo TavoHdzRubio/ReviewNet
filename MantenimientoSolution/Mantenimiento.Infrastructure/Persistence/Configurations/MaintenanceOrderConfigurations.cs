@@ -13,7 +13,7 @@ public class MaintenanceOrderConfigurations : IEntityTypeConfiguration<Maintenan
         builder.Property(o => o.Description).IsRequired().HasMaxLength(500);
         builder.Property(o => o.CreatedAt).IsRequired();
         builder.Property(o => o.UpdatedAt).IsRequired(false);
-        builder.Property(o => o.DeletionAt).IsRequired(false);
+        builder.Property(o => o.DeletedAt).IsRequired(false);
 
         builder.HasOne(x => x.MaintenanceOrderStatus)
             .WithMany()
@@ -26,7 +26,7 @@ public class MaintenanceOrderConfigurations : IEntityTypeConfiguration<Maintenan
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(x => x.Equipment)
-            .WithMany()
+            .WithMany(x => x.Orders)
             .HasForeignKey(x => x.EquipmentId)
             .OnDelete(DeleteBehavior.Restrict);
     }

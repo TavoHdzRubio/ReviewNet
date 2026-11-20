@@ -5,13 +5,10 @@ using Mantenimiento.Application.Equipment.DTOs;
 using Mantenimiento.Application.Interfaces;
 using Mantenimiento.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using MediatR;
 
-public interface IGetEquipmentsUseCase
-{
-    Task<IEnumerable<EquipmentResponse>> ExecuteAsync(GetEquipmentsRequest request, CancellationToken ct = default);
-}
 
-public class GetEquipmentsUseCase : IGetEquipmentsUseCase
+public class GetEquipmentsUseCase : IRequestHandler<GetEquipmentsRequest, IEnumerable<EquipmentResponse>>
 {
     private readonly IAppDbContext _context;
 
@@ -20,7 +17,7 @@ public class GetEquipmentsUseCase : IGetEquipmentsUseCase
         _context = context;
     }
 
-    public async Task<IEnumerable<EquipmentResponse>> ExecuteAsync(GetEquipmentsRequest request, CancellationToken ct = default)
+    public async Task<IEnumerable<EquipmentResponse>> Handle(GetEquipmentsRequest request, CancellationToken ct = default)
     {
         var query = _context.Equipment.AsQueryable();
 
@@ -45,7 +42,7 @@ public class GetEquipmentsUseCase : IGetEquipmentsUseCase
         }
 
         // Exlude deleted equipment
-        query = query.Where(e => e.deletionDate == null);
+        query = query.Where(e => e.DeletedAt == null);
 
         if (request.PageNumber.HasValue && request.PageSize.HasValue)
         {
@@ -60,7 +57,7 @@ public class GetEquipmentsUseCase : IGetEquipmentsUseCase
             e.Name,
             e.Area,
             e.Active,
-            e.UpdatedDate
+            e.UpdatedAt
         ));
     }
 }

@@ -6,5 +6,5 @@ public sealed record EquipmentResponse(
     string Name,
     string Area,
     bool Active,
-    DateTime? UpdatedDate
+    DateTime? UpdatedAt
 );

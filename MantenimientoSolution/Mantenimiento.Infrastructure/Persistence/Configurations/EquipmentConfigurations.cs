@@ -14,5 +14,8 @@ public class EquipmentConfigurations : IEntityTypeConfiguration<Equipment>
         builder.Property(e => e.Code).IsRequired().HasMaxLength(50);
         builder.Property(e => e.Area).HasMaxLength(100);
         builder.Property(e => e.Active).IsRequired();
+        builder.Property(e => e.CreatedAt).IsRequired();
+        builder.Property(e => e.UpdatedAt).IsRequired(false);
+        builder.Property(e => e.DeletedAt).IsRequired(false);
     }
 }

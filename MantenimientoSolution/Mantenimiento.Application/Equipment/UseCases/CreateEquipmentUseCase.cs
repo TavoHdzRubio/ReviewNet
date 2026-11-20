@@ -3,13 +3,9 @@ namespace Mantenimiento.Application.Equipment.UseCases;
 using Mantenimiento.Application.Equipment.DTOs;
 using Mantenimiento.Application.Interfaces;
 using Mantenimiento.Domain.Entities;
+using MediatR;
 
-public interface ICreateEquipmentUseCase
-{
-    Task<int> ExecuteAsync(CreateEquipmentRequest request, CancellationToken ct = default);
-}
-
-public class CreateEquipmentUseCase : ICreateEquipmentUseCase
+public class CreateEquipmentUseCase  : IRequestHandler<CreateEquipmentRequest, int>
 {
     private readonly IAppDbContext _context;
 
@@ -18,7 +14,7 @@ public class CreateEquipmentUseCase : ICreateEquipmentUseCase
         _context = context;
     }
 
-    public async Task<int> ExecuteAsync(CreateEquipmentRequest request, CancellationToken ct = default)
+    public async Task<int> Handle(CreateEquipmentRequest request, CancellationToken ct = default)
     {
         var equipment = new Equipment
         {

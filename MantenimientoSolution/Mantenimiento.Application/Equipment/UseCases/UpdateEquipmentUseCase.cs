@@ -5,13 +5,9 @@ using Mantenimiento.Application.Equipment.DTOs;
 using Mantenimiento.Application.Interfaces;
 using Mantenimiento.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using MediatR;
 
-public interface IUpdateEquipmentUseCase
-{
-    Task<int?> ExecuteAsync(UpdateEquipmentRequest request, CancellationToken ct = default);
-}
-
-public class UpdateEquipmentUseCase : IUpdateEquipmentUseCase
+public class UpdateEquipmentUseCase : IRequestHandler<UpdateEquipmentRequest, int?>
 {
     private readonly IAppDbContext _context;
 
@@ -20,7 +16,7 @@ public class UpdateEquipmentUseCase : IUpdateEquipmentUseCase
         _context = context;
     }
 
-    public async Task<int?> ExecuteAsync(UpdateEquipmentRequest request, CancellationToken ct = default)
+    public async Task<int?> Handle(UpdateEquipmentRequest request, CancellationToken ct = default)
     {
         Equipment? equipment = await _context.Equipment.SingleOrDefaultAsync(e => e.Id == request.Id, ct);
         
@@ -33,7 +29,7 @@ public class UpdateEquipmentUseCase : IUpdateEquipmentUseCase
         equipment.Code = request.Code;
         equipment.Name = request.Name;
         equipment.Active = request.Active;
-        equipment.UpdatedDate = DateTime.UtcNow;
+        equipment.UpdatedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync(ct);
 
         return equipment.Id;

@@ -5,13 +5,10 @@ using Mantenimiento.Application.Equipment.DTOs;
 using Mantenimiento.Application.Interfaces;
 using Mantenimiento.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using MediatR;
 
-public interface IDeleteEquipmentUseCase
-{
-    Task<Equipment?> ExecuteAsync(DeleteEquipmentRequest request, CancellationToken ct = default);
-}
 
-public class DeleteEquipmentUseCase : IDeleteEquipmentUseCase
+public class DeleteEquipmentUseCase : IRequestHandler<DeleteEquipmentRequest, Equipment?>
 {
     private readonly IAppDbContext _context;
 
@@ -20,16 +17,16 @@ public class DeleteEquipmentUseCase : IDeleteEquipmentUseCase
         _context = context;
     }
 
-    public async Task<Equipment?> ExecuteAsync(DeleteEquipmentRequest request, CancellationToken ct = default)
+    public async Task<Equipment?> Handle(DeleteEquipmentRequest request, CancellationToken ct = default)
     {
-        Equipment? equipment = await _context.Equipment.SingleOrDefaultAsync(e => e.Id == request.Id, ct);
+        Equipment? equipment = await _context.Equipment.SingleOrDefaultAsync(e => e.Id == request.Id && e.DeletedAt == null, ct);
         
         if (equipment is null)
         {
             throw new NotFoundException("Equipo", request.Id);
         }
 
-        equipment.deletionDate = DateTime.UtcNow;
+        equipment.DeletedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync(ct);
 
         return equipment;
